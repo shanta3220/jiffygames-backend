@@ -1,6 +1,7 @@
 import initKnex from "knex";
 import configuration from "../knexfile.js";
 const knex = initKnex(configuration);
+import { getAvatarPath } from "../scripts/PathUtils.js";
 
 const index = async (_req, res) => {
   try {
@@ -26,7 +27,7 @@ const index = async (_req, res) => {
           user_id: curr.user_id,
           score: curr.score,
           username,
-          avatar_path,
+          avatar_path: getAvatarPath(user.avatar_path),
         });
         return acc;
       }, {});
@@ -64,7 +65,7 @@ const findOne = async (req, res) => {
           user_id: curr.user_id,
           score: curr.score,
           username,
-          avatar_path,
+          avatar_path: getAvatarPath(user.avatar_path),
         });
         return acc;
       }, []);
