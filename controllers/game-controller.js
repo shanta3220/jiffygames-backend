@@ -18,7 +18,7 @@ const getBaseUrl = () => {
   return `http://${DB_HOST}:${PORT}`;
 };
 
-const index = async (req, res) => {
+const index = async (_req, res) => {
   try {
     let games = await knex("games").select(
       "id",
@@ -48,4 +48,51 @@ const index = async (req, res) => {
   }
 };
 
-export { index };
+const findOne = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let game = await knex("games")
+      .select(
+        "id",
+        "game_name",
+        "project_name",
+        "description",
+        "instruction",
+        "build_path",
+        "image_path",
+        "video_path",
+        "like_count",
+        "leaderboard_id"
+      )
+      .where("games.id", id)
+      .first();
+
+    const baseUrl = getBaseUrl();
+    if (game) {
+      game.build_path = `${baseUrl}/${game.build_path}`;
+      game.image_path = `${baseUrl}/${game.image_path}`;
+      game.video_path = `${baseUrl}/${game.video_path}`;
+
+      let comments = await knex("comments")
+        .select(
+          "comments.id as comment_id",
+          "comments.user_id",
+          "comments.message",
+          "comments.created_at",
+          "users.avatar_path as avatar_path"
+        )
+        .join("users", "comments.user_id", "=", "users.id")
+        .where("comments.game_id", id);
+      game.comments = comments ?? [];
+
+      res.status(200).json(game);
+    } else {
+      res.status(404).json({ message: `game item with ID ${id} not found` });
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Unable to retrive game data" });
+  }
+};
+
+export { index, findOne };
