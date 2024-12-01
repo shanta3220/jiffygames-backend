@@ -3,7 +3,7 @@ import "dotenv/config";
 import cors from "cors";
 import gameRoutes from "./routes/game-routes.js";
 import userRoutes from "./routes/user-routes.js";
-import leaderboardRoutes from "./routes/leaderboard-routes.js";
+import leaderboardRoutes from "./routes/leaderboard-score-routes.js";
 import commentRoutes from "./routes/comment-routes.js";
 
 const app = express();
@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 
 app.use("/games", gameRoutes);
 app.use("/users", userRoutes);
-app.use("/leaderboards", leaderboardRoutes);
+app.use("/leaderboard-scores", leaderboardRoutes);
 app.use("/comments", commentRoutes);
 
 app.listen(PORT, () => {

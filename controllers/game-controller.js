@@ -29,8 +29,7 @@ const index = async (_req, res) => {
       "build_path",
       "image_path",
       "video_path",
-      "like_count",
-      "leaderboard_id"
+      "like_count"
     );
 
     const baseUrl = getBaseUrl();
@@ -61,8 +60,7 @@ const findOne = async (req, res) => {
         "build_path",
         "image_path",
         "video_path",
-        "like_count",
-        "leaderboard_id"
+        "like_count"
       )
       .where("games.id", id)
       .first();

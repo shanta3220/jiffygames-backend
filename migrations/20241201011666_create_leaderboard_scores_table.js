@@ -3,7 +3,8 @@
  * @returns { Promise<void> }
  */
 export function up(knex) {
-  return knex.schema.alterTable("leaderboards", (table) => {
+  return knex.schema.createTable("leaderboard_scores", (table) => {
+    table.increments("id").primary();
     table
       .integer("game_id")
       .unsigned()
@@ -12,7 +13,7 @@ export function up(knex) {
       .onUpdate("CASCADE")
       .onDelete("CASCADE");
     table.integer("user_id").unsigned().references("id").inTable("users");
-    table.integer("score");
+    table.integer("score").notNullable();
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table
       .timestamp("updated_at")
@@ -25,5 +26,5 @@ export function up(knex) {
  * @returns { Promise<void> }
  */
 export function down(knex) {
-  return knex.schema.dropTable("leaderboards");
+  return knex.schema.dropTable("leaderboard_scores");
 }

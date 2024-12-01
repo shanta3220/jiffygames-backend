@@ -5,10 +5,6 @@
 
 export async function up(knex) {
   try {
-    await knex.schema.createTable("leaderboards", (table) => {
-      table.increments("id").primary();
-    });
-
     return knex.schema.createTable("games", (table) => {
       table.increments("id").primary();
       table.string("game_name").notNullable();
@@ -20,13 +16,6 @@ export async function up(knex) {
       table.string("image_path").notNullable();
       table.string("video_path").notNullable();
       table.integer("like_count").notNullable().defaultTo(0);
-      table
-        .integer("leaderboard_id")
-        .unsigned()
-        .nullable()
-        .references("id")
-        .inTable("leaderboards")
-        .onDelete("SET NULL");
       table.timestamp("created_at").defaultTo(knex.fn.now());
       table
         .timestamp("updated_at")
