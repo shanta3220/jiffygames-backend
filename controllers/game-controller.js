@@ -42,8 +42,8 @@ const index = async (_req, res) => {
     });
 
     res.status(200).json(games);
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Unable to retrieve games data" });
   }
 };
@@ -89,8 +89,8 @@ const findOne = async (req, res) => {
     } else {
       res.status(404).json({ message: `game item with ID ${id} not found` });
     }
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Unable to retrive game data" });
   }
 };
