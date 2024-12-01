@@ -71,11 +71,9 @@ const findOne = async (req, res) => {
 
       res.status(200).json({ game_id: id, scores });
     } else {
-      res
-        .status(404)
-        .json({
-          message: `game item with ID ${id} does not have any leaderboard scores`,
-        });
+      res.status(404).json({
+        message: `game item with ID ${id} does not have any leaderboard scores`,
+      });
     }
   } catch (error) {
     console.error(error);
@@ -83,11 +81,75 @@ const findOne = async (req, res) => {
   }
 };
 
-const update = async (_req, res) => {
+const update = async (req, res) => {
   try {
+    const { id } = req.params;
+
+    let { user_id, score } = req.body;
+
+    const parsedUserId = parseInt(user_id, 10);
+
+    if (isNaN(parsedUserId)) {
+      return res.status(400).json({
+        message: "'user_id' must be a valid number",
+      });
+    }
+    user_id = parsedUserId;
+
+    if (!score || typeof score !== "number" || score <= 0) {
+      return res.status(400).json({
+        message:
+          "Missing or invalid required fields. 'user_id' and 'score' must be provided and score must be a positive number",
+      });
+    }
+
+    const leaderboardScores = await knex("leaderboard_scores")
+      .select("user_id", "score")
+      .where({ user_id })
+      .where("game_id", id);
+
+    if (leaderboardScores.length > 0) {
+      const updateCount = await knex("leaderboard_scores")
+        .where("game_id", id)
+        .where({ user_id })
+        .update({
+          user_id,
+          score,
+          game_id: id,
+        });
+
+      if (updateCount === 0) {
+        return res.status(404).json({
+          message: `LeaderboardScore item with Game ID ${id} and ${user_id} not found`,
+        });
+      }
+
+      const { created_at, updated_at, ...updatedScore } = await knex(
+        "leaderboard_scores"
+      )
+        .where("game_id", id)
+        .where({ user_id })
+        .first();
+
+      res.status(200).json(updatedScore);
+    } else {
+      await knex("leaderboard_scores").insert({
+        game_id: id,
+        user_id: user_id,
+        score: score,
+      });
+
+      const { created_at, updated_at, ...newUserScore } = await knex(
+        "leaderboard_scores"
+      )
+        .where("user_id", user_id)
+        .first();
+
+      res.status(201).json(newUserScore);
+    }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Unable to retrieve update score" });
+    res.status(500).json({ message: "Unable to retrieve add or update score" });
   }
 };
 
