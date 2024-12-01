@@ -27,7 +27,7 @@ const index = async (_req, res) => {
           user_id: curr.user_id,
           score: curr.score,
           username,
-          avatar_path: getAvatarPath(user.avatar_path),
+          avatar_path: getAvatarPath(avatar_path),
         });
         return acc;
       }, {});
@@ -60,7 +60,7 @@ const findOne = async (req, res) => {
       }, {});
 
       const scores = leaderboardScores.reduce((acc, curr) => {
-        const { username, avatar_path } = findUser[curr.user_id];
+        const { username } = findUser[curr.user_id];
         acc.push({
           user_id: curr.user_id,
           score: curr.score,

@@ -42,6 +42,7 @@ const findOne = async (req, res) => {
         "project_name",
         "description",
         "instruction",
+        "category",
         "build_path",
         "image_path",
         "video_path",
@@ -57,7 +58,7 @@ const findOne = async (req, res) => {
 
       let comments = await knex("comments")
         .select(
-          "comments.id as comment_id",
+          "comments.id",
           "comments.user_id",
           "comments.message",
           "comments.created_at",

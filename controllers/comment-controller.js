@@ -1,6 +1,6 @@
 import initKnex from "knex";
 import configuration from "../knexfile.js";
-import { getFullPath, getAvatarPath } from "../scripts/PathUtils.js";
+import { getAvatarPath } from "../scripts/PathUtils.js";
 import "dotenv/config";
 const knex = initKnex(configuration);
 
@@ -8,7 +8,7 @@ const index = async (req, res) => {
   try {
     let comments = await knex("comments")
       .select(
-        "comments.id as comment_id",
+        "comments.id",
         "comments.game_id",
         "comments.user_id",
         "comments.message",
@@ -36,7 +36,7 @@ const findOne = async (req, res) => {
 
     let comment = await knex("comments")
       .select(
-        "comments.id as comment_id",
+        "comments.id",
         "comments.game_id",
         "comments.user_id",
         "comments.message",

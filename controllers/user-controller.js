@@ -77,7 +77,7 @@ const findOne = async (req, res) => {
   try {
     const { id } = req.params;
     let user = await knex("users")
-      .select("id", "username", "email", "about_me", "avatar_path")
+      .select("id", "username", "email", "password", "about_me", "avatar_path")
       .where("id", id)
       .first();
     if (!user) {
