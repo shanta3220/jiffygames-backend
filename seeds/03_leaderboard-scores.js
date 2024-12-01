@@ -4,7 +4,7 @@
  */
 
 export async function seed(knex) {
-  await knex("leaderboards").del();
+  await knex("leaderboard_scores").del();
 
   const leaderboard1 = [
     { game_id: 1, user_id: 1, score: 60 },
@@ -91,7 +91,7 @@ export async function seed(knex) {
   ];
 
   // Inserting the adjusted leaderboard data into the database
-  await knex("leaderboards").insert([
+  await knex("leaderboard_scores").insert([
     ...leaderboard1,
     ...leaderboard2,
     ...leaderboard3,
