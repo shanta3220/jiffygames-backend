@@ -123,22 +123,28 @@ const update = async (req, res) => {
       avatar_path = "";
     }
 
-    const addedUser = await knex("users")
+    const updatedUser = await knex("users")
       .update({
         username,
         email,
         about_me,
         avatar_path,
+        password,
       })
       .where("id", id);
+    if (updatedUser > 0) {
+      const { created_at, updated_at, ...newUser } = await knex("users")
+        .where({ id })
+        .first();
 
-    const { created_at, updated_at, ...newUser } = await knex("users")
-      .where({ id })
-      .first();
+      newUser.avatar_path = getAvatarPath(avatar_path);
 
-    newUser.avatar_path = getAvatarPath(avatar_path);
-
-    res.status(201).json(newUser);
+      res.status(201).json(newUser);
+    } else {
+      res.status(404).json({
+        message: `User with ID ${id} doesn't exit, failed to update the user`,
+      });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Unable to retrieve users data" });
