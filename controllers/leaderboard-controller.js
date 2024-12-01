@@ -51,6 +51,11 @@ const findOne = async (req, res) => {
 
     if (leaderboardScores) {
       const users = await knex("users").select("id", "username", "avatar_path");
+      const { game_name } = await knex("games")
+        .select("game_name")
+        .where("id", id)
+        .first();
+
       const findUser = users.reduce((acc, user) => {
         acc[user.id] = {
           username: user.username,
@@ -65,12 +70,12 @@ const findOne = async (req, res) => {
           user_id: curr.user_id,
           score: curr.score,
           username,
-          avatar_path: getAvatarPath(user.avatar_path),
+          avatar_path: getAvatarPath(curr.avatar_path),
         });
         return acc;
       }, []);
 
-      res.status(200).json({ game_id: id, scores });
+      res.status(200).json({ game_id: id, game_name, scores });
     } else {
       res.status(404).json({
         message: `game item with ID ${id} does not have any leaderboard scores`,
