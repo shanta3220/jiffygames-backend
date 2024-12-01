@@ -97,8 +97,8 @@ const findOne = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params;
-    const { username, email, password, about_me, avatar_path } = req.body;
-
+    let { username, email, password, about_me, avatar_path } = req.body;
+    console.log(id);
     if (!username?.trim() || !password?.trim() || !email?.trim()) {
       return res.status(400).json({
         message:
@@ -132,6 +132,7 @@ const update = async (req, res) => {
         password,
       })
       .where("id", id);
+
     if (updatedUser > 0) {
       const { created_at, updated_at, ...newUser } = await knex("users")
         .where({ id })
