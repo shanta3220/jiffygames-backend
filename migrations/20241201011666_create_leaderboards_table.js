@@ -3,8 +3,7 @@
  * @returns { Promise<void> }
  */
 export function up(knex) {
-  return knex.schema.createTable("leaderboards", (table) => {
-    table.increments("id").primary();
+  return knex.schema.alterTable("leaderboards", (table) => {
     table
       .integer("game_id")
       .unsigned()

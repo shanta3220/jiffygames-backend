@@ -12,7 +12,7 @@ export function up(knex) {
       .inTable("games")
       .onUpdate("CASCADE")
       .onDelete("CASCADE");
-    table.string("message").notNullable();
+    table.text("message").notNullable();
     table
       .integer("user_id")
       .unsigned()

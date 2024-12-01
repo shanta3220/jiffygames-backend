@@ -73,7 +73,7 @@ export async function seed(knex) {
       updated_at: knex.fn.now(),
     },
     {
-      game_id: 5,
+      game_id: 1,
       user_id: 9,
       message: "The boss battles are epic! Loving every minute of it.",
       like_count: 0,
@@ -81,7 +81,7 @@ export async function seed(knex) {
       updated_at: knex.fn.now(),
     },
     {
-      game_id: 5,
+      game_id: 2,
       user_id: 10,
       message: "Pretty average game, but it's a good way to kill time.",
       like_count: 0,
