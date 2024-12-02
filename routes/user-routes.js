@@ -37,4 +37,6 @@ router.route("/:id").put(
   userController.update
 );
 
+router.route("/:id/games").get(userController.games);
+
 export default router;

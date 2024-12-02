@@ -157,4 +157,29 @@ const update = async (req, res) => {
   }
 };
 
-export { index, add, findOne, update };
+const games = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const leaderboardScores = await knex("leaderboard_scores")
+      .select(
+        "leaderboard_scores.user_id",
+        "leaderboard_scores.score",
+        "users.username",
+        "users.avatar_path",
+        "games.game_name",
+        "leaderboard_scores.game_id"
+      )
+      .where("leaderboard_scores.user_id", id)
+      .join("users", "leaderboard_scores.user_id", "users.id")
+      .join("games", "leaderboard_scores.game_id", "games.id")
+      .orderBy("leaderboard_scores.score", "desc");
+
+    res.status(200).json(leaderboardScores);
+  } catch (error) {
+    console.error("Error fetching leaderboard data:", error);
+    res.status(500).json({ message: "Unable to retrieve leaderboard data" });
+  }
+};
+
+export { index, add, findOne, update, games };
