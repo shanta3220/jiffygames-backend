@@ -61,11 +61,13 @@ const findOne = async (req, res) => {
           "comments.id",
           "comments.user_id",
           "comments.message",
+          "users.username",
           "comments.created_at",
           "users.avatar_path as avatar_path"
         )
         .join("users", "comments.user_id", "=", "users.id")
-        .where("comments.game_id", id);
+        .where("comments.game_id", id)
+        .orderBy("comments.created_at", "desc");
 
       game.comments =
         comments.map((comment) => {

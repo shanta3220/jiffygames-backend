@@ -98,7 +98,7 @@ const update = async (req, res) => {
   try {
     const { id } = req.params;
     let { username, email, password, about_me, avatar_path } = req.body;
-    console.log(id);
+
     if (!username?.trim() || !password?.trim() || !email?.trim()) {
       return res.status(400).json({
         message:
