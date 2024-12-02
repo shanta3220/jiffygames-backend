@@ -98,7 +98,12 @@ const update = async (req, res) => {
   try {
     const { id } = req.params;
     let { username, email, password, about_me, avatar_path } = req.body;
+    const avatarFile = req.file;
+    const imagePath = avatarFile
+      ? `images/avatars/${avatarFile.filename}`
+      : "images/avatars/default-avatar.png";
 
+    avatar_path = imagePath;
     if (!username?.trim() || !password?.trim() || !email?.trim()) {
       return res.status(400).json({
         message:

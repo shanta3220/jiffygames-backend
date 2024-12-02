@@ -61,16 +61,17 @@ const findOne = async (req, res) => {
           username: user.username,
           avatar_path: user.avatar_path,
         };
+
         return acc;
       }, {});
 
       const scores = leaderboardScores.reduce((acc, curr) => {
-        const { username } = findUser[curr.user_id];
+        const { username, avatar_path } = findUser[curr.user_id];
         acc.push({
           user_id: curr.user_id,
           score: curr.score,
           username,
-          avatar_path: getAvatarPath(curr.avatar_path),
+          avatar_path: getAvatarPath(avatar_path),
         });
         return acc;
       }, []);
