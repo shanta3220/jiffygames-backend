@@ -77,7 +77,7 @@ const findOne = async (req, res) => {
   try {
     const { id } = req.params;
     let user = await knex("users")
-      .select("id", "username", "email", "about_me", "avatar_path")
+      .select("id", "username", "email", "password", "about_me", "avatar_path")
       .where("id", id)
       .first();
     if (!user) {
@@ -97,8 +97,13 @@ const findOne = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params;
-    const { username, email, password, about_me, avatar_path } = req.body;
+    let { username, email, password, about_me, avatar_path } = req.body;
+    const avatarFile = req.file;
+    const imagePath = avatarFile
+      ? `images/avatars/${avatarFile.filename}`
+      : "images/avatars/default-avatar.png";
 
+    avatar_path = imagePath;
     if (!username?.trim() || !password?.trim() || !email?.trim()) {
       return res.status(400).json({
         message:
@@ -132,6 +137,7 @@ const update = async (req, res) => {
         password,
       })
       .where("id", id);
+
     if (updatedUser > 0) {
       const { created_at, updated_at, ...newUser } = await knex("users")
         .where({ id })
@@ -151,4 +157,29 @@ const update = async (req, res) => {
   }
 };
 
-export { index, add, findOne, update };
+const games = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const leaderboardScores = await knex("leaderboard_scores")
+      .select(
+        "leaderboard_scores.user_id",
+        "leaderboard_scores.score",
+        "users.username",
+        "users.avatar_path",
+        "games.game_name",
+        "leaderboard_scores.game_id"
+      )
+      .where("leaderboard_scores.user_id", id)
+      .join("users", "leaderboard_scores.user_id", "users.id")
+      .join("games", "leaderboard_scores.game_id", "games.id")
+      .orderBy("leaderboard_scores.score", "desc");
+
+    res.status(200).json(leaderboardScores);
+  } catch (error) {
+    console.error("Error fetching leaderboard data:", error);
+    res.status(500).json({ message: "Unable to retrieve leaderboard data" });
+  }
+};
+
+export { index, add, findOne, update, games };

@@ -1,6 +1,6 @@
 import initKnex from "knex";
 import configuration from "../knexfile.js";
-import { getFullPath, getAvatarPath } from "../scripts/PathUtils.js";
+import { getAvatarPath } from "../scripts/PathUtils.js";
 import "dotenv/config";
 const knex = initKnex(configuration);
 
@@ -8,14 +8,16 @@ const index = async (req, res) => {
   try {
     let comments = await knex("comments")
       .select(
-        "comments.id as comment_id",
+        "comments.id",
         "comments.game_id",
         "comments.user_id",
+        "users.username",
         "comments.message",
         "comments.created_at",
         "users.avatar_path as avatar_path"
       )
-      .join("users", "comments.user_id", "=", "users.id");
+      .join("users", "comments.user_id", "=", "users.id")
+      .orderBy("comments.created_at", "dsc");
 
     comments =
       comments.map((comment) => {
@@ -36,9 +38,10 @@ const findOne = async (req, res) => {
 
     let comment = await knex("comments")
       .select(
-        "comments.id as comment_id",
+        "comments.id",
         "comments.game_id",
         "comments.user_id",
+        "users.username",
         "comments.message",
         "comments.created_at",
         "users.avatar_path as avatar_path"
@@ -94,10 +97,11 @@ const add = async (req, res) => {
     const { updated_at, ...newComment } = await knex("comments")
       .where({ id })
       .first();
-    res.status(201).json(newComment);
+
     if (newComment) {
-      newComment.avatar_path = getAvatarPath(comment.avatar_path);
-      res.status(200).json(newComment);
+      newComment.avatar_path = getAvatarPath(newComment.avatar_path);
+      console.log(newComment);
+      res.status(201).json(newComment);
     } else {
       res.status(404).json({ message: `Comment with ID ${id} doesn't exist` });
     }

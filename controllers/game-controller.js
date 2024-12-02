@@ -42,6 +42,7 @@ const findOne = async (req, res) => {
         "project_name",
         "description",
         "instruction",
+        "category",
         "build_path",
         "image_path",
         "video_path",
@@ -57,14 +58,16 @@ const findOne = async (req, res) => {
 
       let comments = await knex("comments")
         .select(
-          "comments.id as comment_id",
+          "comments.id",
           "comments.user_id",
           "comments.message",
+          "users.username",
           "comments.created_at",
           "users.avatar_path as avatar_path"
         )
         .join("users", "comments.user_id", "=", "users.id")
-        .where("comments.game_id", id);
+        .where("comments.game_id", id)
+        .orderBy("comments.created_at", "desc");
 
       game.comments =
         comments.map((comment) => {
