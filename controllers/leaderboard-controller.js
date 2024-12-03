@@ -3,6 +3,16 @@ import configuration from "../knexfile.js";
 const knex = initKnex(configuration);
 import { getAvatarPath } from "../scripts/PathUtils.js";
 
+const indexOrFindUserScore = async (req, res) => {
+  const { user_id, game_id } = req.query;
+
+  if (user_id && game_id) {
+    return findUserScore(req, res);
+  }
+
+  return index(req, res);
+};
+
 const index = async (_req, res) => {
   try {
     const leaderboardScores = await knex("leaderboard_scores")
@@ -160,4 +170,28 @@ const update = async (req, res) => {
   }
 };
 
-export { index, findOne, update };
+const findUserScore = async (req, res) => {
+  try {
+    const { game_id, user_id } = req.query;
+
+    if (!game_id || !user_id) {
+      return res.status(400).json({ message: "Missing game_id or user_id" });
+    }
+
+    const leaderboardScore = await knex("leaderboard_scores")
+      .select("user_id", "score")
+      .where({ user_id, game_id })
+      .first();
+
+    if (leaderboardScore) {
+      return res.status(200).json(leaderboardScore);
+    }
+
+    return res.status(200).json({ message: "Score not found" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Unable to retrieve user score" });
+  }
+};
+
+export { indexOrFindUserScore, findOne, update };
