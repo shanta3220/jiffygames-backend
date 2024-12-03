@@ -1,16 +1,16 @@
 const getBaseUrl = () => {
-  const { DB_HOST, NODE_ENV } = process.env;
+  const { BACKEND_URL, NODE_ENV } = process.env;
 
-  if (!DB_HOST) {
+  if (!BACKEND_URL) {
     throw new Error("DB_HOST is not defined in environment variables");
   }
 
   if (NODE_ENV === "production") {
-    return `https://${DB_HOST}`;
+    return `https://${BACKEND_URL}`;
   }
 
   const PORT = process.env.PORT || 5050;
-  return `http://${DB_HOST}:${PORT}`;
+  return `http://${BACKEND_URL}:${PORT}`;
 };
 
 const baseUrl = getBaseUrl();
