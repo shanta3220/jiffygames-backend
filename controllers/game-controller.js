@@ -85,4 +85,30 @@ const findOne = async (req, res) => {
   }
 };
 
-export { index, findOne };
+const like = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const updateCount = await knex("games")
+      .where("id", id)
+      .increment("like_count", 1);
+
+    if (updateCount === 0) {
+      return res
+        .status(404)
+        .json({ message: `Game item with ID ${id} not found` });
+    }
+
+    const { updated_at, created_at, ...updatedGame } = await knex("games")
+      .select("id", "like_count")
+      .where("id", id)
+      .first();
+
+    res.status(200).json(updatedGame);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to update like count" });
+  }
+};
+
+export { index, findOne, like };

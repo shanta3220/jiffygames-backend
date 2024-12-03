@@ -8,4 +8,6 @@ router
   .route("/:id")
   .get(commentController.findOne)
   .delete(commentController.remove);
+
+router.route("/:id/like").get(commentController.like);
 export default router;

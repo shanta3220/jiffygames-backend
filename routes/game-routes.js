@@ -5,4 +5,5 @@ const router = express.Router();
 
 router.route("/").get(gameController.index);
 router.route("/:id").get(gameController.findOne);
+router.route("/:id/like").get(gameController.like);
 export default router;
