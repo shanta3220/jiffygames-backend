@@ -100,7 +100,6 @@ const add = async (req, res) => {
 
     if (newComment) {
       newComment.avatar_path = getAvatarPath(newComment.avatar_path);
-      console.log(newComment);
       res.status(201).json(newComment);
     } else {
       res.status(404).json({ message: `Comment with ID ${id} doesn't exist` });
@@ -127,4 +126,31 @@ const remove = async (req, res) => {
     res.status(500).json({ error: error });
   }
 };
-export { index, findOne, add, remove };
+
+const like = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const updateCount = await knex("comments")
+      .where("id", id)
+      .increment("like_count", 1);
+
+    if (updateCount === 0) {
+      return res
+        .status(404)
+        .json({ message: `Game item with ID ${id} not found` });
+    }
+
+    const updatedComment = await knex("comments")
+      .select("id", "like_count")
+      .where("id", id)
+      .first();
+
+    res.status(200).json(updatedComment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Unable to update like count" });
+  }
+};
+
+export { index, findOne, add, remove, like };
