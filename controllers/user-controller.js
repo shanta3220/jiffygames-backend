@@ -123,7 +123,7 @@ const update = async (req, res) => {
     }
 
     let updatedUser;
-    console.log("called", avatar_path);
+
     if (!avatar_path || avatar_path.trim() == "") {
       avatar_path = "";
       updatedUser = await knex("users")
@@ -169,13 +169,14 @@ const games = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const leaderboardScores = await knex("leaderboard_scores")
+    let leaderboardScores = await knex("leaderboard_scores")
       .select(
         "leaderboard_scores.user_id",
         "leaderboard_scores.score",
         "users.username",
         "users.avatar_path",
         "games.game_name",
+        "games.image_path",
         "leaderboard_scores.game_id"
       )
       .where("leaderboard_scores.user_id", id)
@@ -183,6 +184,13 @@ const games = async (req, res) => {
       .join("games", "leaderboard_scores.game_id", "games.id")
       .orderBy("leaderboard_scores.score", "desc");
 
+    leaderboardScores = leaderboardScores.map((leaderboardScore) => {
+      leaderboardScore.avatar_path = getAvatarPath(
+        leaderboardScore.avatar_path
+      );
+      leaderboardScore.image_path = getAvatarPath(leaderboardScore.image_path);
+      return leaderboardScore;
+    });
     res.status(200).json(leaderboardScores);
   } catch (error) {
     console.error("Error fetching leaderboard data:", error);

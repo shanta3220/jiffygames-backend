@@ -61,6 +61,7 @@ const findOne = async (req, res) => {
           "comments.id",
           "comments.user_id",
           "comments.message",
+          "comments.like_count",
           "users.username",
           "comments.created_at",
           "users.avatar_path as avatar_path"

@@ -100,7 +100,6 @@ const add = async (req, res) => {
 
     if (newComment) {
       newComment.avatar_path = getAvatarPath(newComment.avatar_path);
-      console.log(newComment);
       res.status(201).json(newComment);
     } else {
       res.status(404).json({ message: `Comment with ID ${id} doesn't exist` });
