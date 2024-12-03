@@ -99,9 +99,7 @@ const update = async (req, res) => {
     const { id } = req.params;
     let { username, email, password, about_me, avatar_path } = req.body;
     const avatarFile = req.file;
-    const imagePath = avatarFile
-      ? `images/avatars/${avatarFile.filename}`
-      : "images/avatars/default-avatar.png";
+    const imagePath = avatarFile ? `images/avatars/${avatarFile.filename}` : "";
 
     avatar_path = imagePath;
     if (!username?.trim() || !password?.trim() || !email?.trim()) {
@@ -124,19 +122,29 @@ const update = async (req, res) => {
       about_me = "";
     }
 
-    if (avatar_path?.trim() == "") {
+    let updatedUser;
+    console.log("called", avatar_path);
+    if (!avatar_path || avatar_path.trim() == "") {
       avatar_path = "";
+      updatedUser = await knex("users")
+        .update({
+          username,
+          email,
+          about_me,
+          password,
+        })
+        .where("id", id);
+    } else {
+      updatedUser = await knex("users")
+        .update({
+          username,
+          email,
+          about_me,
+          avatar_path,
+          password,
+        })
+        .where("id", id);
     }
-
-    const updatedUser = await knex("users")
-      .update({
-        username,
-        email,
-        about_me,
-        avatar_path,
-        password,
-      })
-      .where("id", id);
 
     if (updatedUser > 0) {
       const { created_at, updated_at, ...newUser } = await knex("users")
