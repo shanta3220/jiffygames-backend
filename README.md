@@ -2,8 +2,11 @@
 
 Many players enjoy casual games but dislike installing multiple apps or managing device storage. JiffyGames solves this problem by offering instant, browser-based access to games with no installation required. By integrating gaming with social features like leaderboards and profiles, the app combines fun with engagement in a convenient, lightweight platform.
 
+### Website
+[Checkout the website](https://jiffygames.netlify.app)
+
 ### Frontend
-[Check Front Project](https://github.com/shanta3220/nusrat-jahan-shanta-capstone)
+[Frontend project](https://github.com/shanta3220/nusrat-jahan-shanta-capstone)
 
 ### Endpoints
 
