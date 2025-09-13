@@ -46,6 +46,16 @@ const add = async (req, res) => {
       });
     }
 
+    const userExists = await knex("users")
+      .select("username")
+      .where({ username })
+      .first();
+    if (userExists) {
+      return res.status(400).json({
+        message: "username already exists",
+      });
+    }
+
     if (about_me?.trim() == "") {
       about_me = "";
     }
