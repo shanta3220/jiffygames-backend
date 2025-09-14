@@ -1,6 +1,7 @@
 import express from "express";
 import * as userController from "../controllers/user-controller.js";
 import path from "path";
+import auth from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -18,10 +19,12 @@ const storage = multer.diskStorage({
 const uploadImage = multer({ storage });
 
 router.route("/").get(userController.index).post(userController.add);
+
 router
   .route("/:id")
   .get(userController.findOne)
   .put(
+    auth,
     uploadImage.single("avatar_path"),
     (req, res, next) => {
       next();
