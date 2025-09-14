@@ -5,6 +5,7 @@ import gameRoutes from "./routes/game-routes.js";
 import userRoutes from "./routes/user-routes.js";
 import leaderboardRoutes from "./routes/leaderboard-routes.js";
 import commentRoutes from "./routes/comment-routes.js";
+import authRoutes from "./routes/auth-routes.js";
 
 const app = express();
 app.use(cors());
@@ -18,6 +19,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/games", gameRoutes);
+app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/leaderboards", leaderboardRoutes);
 app.use("/comments", commentRoutes);
